@@ -13,6 +13,15 @@ interface UploadedFile {
   columns?: number;
 }
 
+// Mock preview data
+const mockPreviewData = [
+  { id: 1, employee_id: 'EMP001', name: 'John Smith', department: 'Engineering', performance: 85, satisfaction: 4.2, training_hours: 45 },
+  { id: 2, employee_id: 'EMP002', name: 'Sarah Johnson', department: 'Sales', performance: 72, satisfaction: 3.8, training_hours: 32 },
+  { id: 3, employee_id: 'EMP003', name: 'Michael Brown', department: 'HR', performance: 91, satisfaction: 4.5, training_hours: 28 },
+  { id: 4, employee_id: 'EMP004', name: 'Emily Davis', department: 'Marketing', performance: 78, satisfaction: 3.9, training_hours: 55 },
+  { id: 5, employee_id: 'EMP005', name: 'David Wilson', department: 'Finance', performance: 88, satisfaction: 4.1, training_hours: 40 },
+];
+
 export function DatasetUpload() {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
@@ -169,26 +178,68 @@ export function DatasetUpload() {
         )}
       </div>
 
+      {/* Data Preview Table */}
+      {uploadedFile?.status === 'complete' && (
+        <div className="bg-card border border-border rounded-xl p-4 sm:p-6 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <h3 className="font-semibold text-lg">Data Preview</h3>
+            <span className="text-sm text-muted-foreground">Showing first 5 rows</span>
+          </div>
+          <div className="overflow-x-auto -mx-4 sm:mx-0">
+            <div className="inline-block min-w-full align-middle">
+              <table className="min-w-full divide-y divide-border">
+                <thead>
+                  <tr className="bg-muted/30">
+                    {Object.keys(mockPreviewData[0]).map((key) => (
+                      <th 
+                        key={key} 
+                        className="px-3 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider whitespace-nowrap"
+                      >
+                        {key.replace(/_/g, ' ')}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/50">
+                  {mockPreviewData.map((row, idx) => (
+                    <tr key={idx} className="hover:bg-muted/20 transition-colors">
+                      {Object.values(row).map((value, cellIdx) => (
+                        <td 
+                          key={cellIdx} 
+                          className="px-3 py-3 text-sm whitespace-nowrap"
+                        >
+                          {value}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Preprocessing Options */}
       {uploadedFile?.status === 'complete' && (
-        <div className="bg-card border border-border rounded-xl p-6 space-y-4">
+        <div className="bg-card border border-border rounded-xl p-4 sm:p-6 space-y-4">
           <h3 className="font-semibold text-lg">Preprocessing Options</h3>
           <div className="grid gap-2">
             <label className="flex items-center gap-3 p-3 rounded-lg bg-muted/20 hover:bg-muted/30 cursor-pointer transition-colors">
               <input type="checkbox" defaultChecked className="rounded border-border w-4 h-4" />
-              <span>Remove duplicates</span>
+              <span className="text-sm sm:text-base">Remove duplicates</span>
             </label>
             <label className="flex items-center gap-3 p-3 rounded-lg bg-muted/20 hover:bg-muted/30 cursor-pointer transition-colors">
               <input type="checkbox" defaultChecked className="rounded border-border w-4 h-4" />
-              <span>Handle missing values (mean imputation)</span>
+              <span className="text-sm sm:text-base">Handle missing values (mean imputation)</span>
             </label>
             <label className="flex items-center gap-3 p-3 rounded-lg bg-muted/20 hover:bg-muted/30 cursor-pointer transition-colors">
               <input type="checkbox" className="rounded border-border w-4 h-4" />
-              <span>Normalize numeric features</span>
+              <span className="text-sm sm:text-base">Normalize numeric features</span>
             </label>
             <label className="flex items-center gap-3 p-3 rounded-lg bg-muted/20 hover:bg-muted/30 cursor-pointer transition-colors">
               <input type="checkbox" className="rounded border-border w-4 h-4" />
-              <span>Encode categorical variables</span>
+              <span className="text-sm sm:text-base">Encode categorical variables</span>
             </label>
           </div>
           

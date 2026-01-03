@@ -22,7 +22,7 @@ export function RegressionSection() {
   return (
     <div className="space-y-6">
       {/* Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard
           title="R² Score"
           value="0.8234"
@@ -144,26 +144,27 @@ export function RegressionSection() {
         subtitle="Correlation analysis by department"
         delay={600}
       >
-        <ResponsiveContainer width="100%" height={400}>
-          <ScatterChart>
+        <ResponsiveContainer width="100%" height={350}>
+          <ScatterChart margin={{ top: 20, right: 20, bottom: 40, left: 20 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(222, 47%, 16%)" />
             <XAxis 
               dataKey="satisfaction" 
               stroke="hsl(215, 20%, 55%)" 
-              fontSize={12}
+              fontSize={11}
               name="Satisfaction"
               domain={[2, 5]}
-              label={{ value: 'Satisfaction Score', position: 'bottom', fill: 'hsl(215, 20%, 55%)' }}
+              tickMargin={5}
             />
             <YAxis 
               dataKey="performance" 
               stroke="hsl(215, 20%, 55%)" 
-              fontSize={12}
+              fontSize={11}
               name="Performance"
               domain={[30, 100]}
-              label={{ value: 'Performance Score', angle: -90, position: 'insideLeft', fill: 'hsl(215, 20%, 55%)' }}
+              tickMargin={5}
+              width={35}
             />
-            <ZAxis range={[50, 200]} />
+            <ZAxis range={[40, 150]} />
             <Tooltip 
               contentStyle={{ 
                 backgroundColor: 'hsl(222, 47%, 8%)', 
@@ -172,7 +173,12 @@ export function RegressionSection() {
               }}
               formatter={(value: number, name: string) => [value.toFixed(2), name]}
             />
-            <Legend />
+            <Legend 
+              wrapperStyle={{ paddingTop: '10px' }}
+              layout="horizontal"
+              verticalAlign="bottom"
+              align="center"
+            />
             <Scatter 
               name="Engineering" 
               data={satisfactionVsPerformance.filter(d => d.department === 'Engineering')} 
@@ -200,6 +206,10 @@ export function RegressionSection() {
             />
           </ScatterChart>
         </ResponsiveContainer>
+        <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-4 text-xs text-muted-foreground">
+          <span>X-axis: Satisfaction Score</span>
+          <span>Y-axis: Performance Score</span>
+        </div>
       </ChartCard>
     </div>
   );
