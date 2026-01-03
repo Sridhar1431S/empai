@@ -1,8 +1,9 @@
 import { useState, useRef } from 'react';
-import { Upload, FileSpreadsheet, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { Upload, FileSpreadsheet, CheckCircle, AlertCircle, Loader2, Download, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 interface UploadedFile {
   name: string;
@@ -13,19 +14,34 @@ interface UploadedFile {
   columns?: number;
 }
 
-// Mock preview data
+// Extended mock preview data for pagination demo
 const mockPreviewData = [
   { id: 1, employee_id: 'EMP001', name: 'John Smith', department: 'Engineering', performance: 85, satisfaction: 4.2, training_hours: 45 },
   { id: 2, employee_id: 'EMP002', name: 'Sarah Johnson', department: 'Sales', performance: 72, satisfaction: 3.8, training_hours: 32 },
   { id: 3, employee_id: 'EMP003', name: 'Michael Brown', department: 'HR', performance: 91, satisfaction: 4.5, training_hours: 28 },
   { id: 4, employee_id: 'EMP004', name: 'Emily Davis', department: 'Marketing', performance: 78, satisfaction: 3.9, training_hours: 55 },
   { id: 5, employee_id: 'EMP005', name: 'David Wilson', department: 'Finance', performance: 88, satisfaction: 4.1, training_hours: 40 },
+  { id: 6, employee_id: 'EMP006', name: 'Lisa Anderson', department: 'Engineering', performance: 92, satisfaction: 4.7, training_hours: 52 },
+  { id: 7, employee_id: 'EMP007', name: 'James Taylor', department: 'Sales', performance: 65, satisfaction: 3.2, training_hours: 25 },
+  { id: 8, employee_id: 'EMP008', name: 'Jennifer Martinez', department: 'HR', performance: 79, satisfaction: 4.0, training_hours: 38 },
+  { id: 9, employee_id: 'EMP009', name: 'Robert Garcia', department: 'Marketing', performance: 83, satisfaction: 3.6, training_hours: 42 },
+  { id: 10, employee_id: 'EMP010', name: 'Amanda White', department: 'Finance', performance: 95, satisfaction: 4.8, training_hours: 60 },
 ];
+
+const ITEMS_PER_PAGE = 5;
 
 export function DatasetUpload() {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
+
+  const totalPages = Math.ceil(mockPreviewData.length / ITEMS_PER_PAGE);
+  const paginatedData = mockPreviewData.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   const formatFileSize = (bytes: number) => {
     if (bytes < 1024) return bytes + ' B';
@@ -41,6 +57,7 @@ export function DatasetUpload() {
       progress: 0,
     };
     setUploadedFile(uploadFile);
+    setCurrentPage(1);
 
     const uploadInterval = setInterval(() => {
       setUploadedFile(prev => {
@@ -86,13 +103,54 @@ export function DatasetUpload() {
 
   const resetUpload = () => {
     setUploadedFile(null);
+    setCurrentPage(1);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
+  const exportToCSV = () => {
+    const headers = Object.keys(mockPreviewData[0]).join(',');
+    const rows = mockPreviewData.map(row => Object.values(row).join(','));
+    const csvContent = [headers, ...rows].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'preprocessed_data.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: "Export Successful",
+      description: "Preprocessed data exported as CSV",
+    });
+  };
+
+  const exportToJSON = () => {
+    const jsonContent = JSON.stringify(mockPreviewData, null, 2);
+    
+    const blob = new Blob([jsonContent], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'preprocessed_data.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: "Export Successful",
+      description: "Preprocessed data exported as JSON",
+    });
+  };
+
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto space-y-6">
       {/* Upload Area */}
       <div className="bg-card border border-border rounded-xl p-6">
         {!uploadedFile ? (
@@ -181,9 +239,23 @@ export function DatasetUpload() {
       {/* Data Preview Table */}
       {uploadedFile?.status === 'complete' && (
         <div className="bg-card border border-border rounded-xl p-4 sm:p-6 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <h3 className="font-semibold text-lg">Data Preview</h3>
-            <span className="text-sm text-muted-foreground">Showing first 5 rows</span>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 className="font-semibold text-lg">Data Preview</h3>
+              <span className="text-sm text-muted-foreground">
+                Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, mockPreviewData.length)} of {mockPreviewData.length} rows
+              </span>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={exportToCSV} className="gap-2">
+                <Download className="w-4 h-4" />
+                <span className="hidden sm:inline">CSV</span>
+              </Button>
+              <Button variant="outline" size="sm" onClick={exportToJSON} className="gap-2">
+                <Download className="w-4 h-4" />
+                <span className="hidden sm:inline">JSON</span>
+              </Button>
+            </div>
           </div>
           <div className="overflow-x-auto -mx-4 sm:mx-0">
             <div className="inline-block min-w-full align-middle">
@@ -201,7 +273,7 @@ export function DatasetUpload() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/50">
-                  {mockPreviewData.map((row, idx) => (
+                  {paginatedData.map((row, idx) => (
                     <tr key={idx} className="hover:bg-muted/20 transition-colors">
                       {Object.values(row).map((value, cellIdx) => (
                         <td 
@@ -215,6 +287,31 @@ export function DatasetUpload() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+          
+          {/* Pagination */}
+          <div className="flex items-center justify-between pt-2">
+            <p className="text-sm text-muted-foreground">
+              Page {currentPage} of {totalPages}
+            </p>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </Button>
             </div>
           </div>
         </div>
