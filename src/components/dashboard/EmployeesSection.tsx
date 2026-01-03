@@ -78,18 +78,19 @@ export function EmployeesSection() {
         </Select>
       </div>
 
-      {/* Table */}
+      {/* Table - Desktop View */}
       <ChartCard 
         title="Employee Directory" 
         subtitle={`${filteredEmployees.length} employees found`}
         delay={0}
       >
-        <div className="overflow-x-auto">
+        {/* Desktop Table */}
+        <div className="hidden lg:block overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border">
                 <th 
-                  className="text-left py-4 px-4 font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                  className="text-left py-3 px-3 font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors text-sm"
                   onClick={() => handleSort('name')}
                 >
                   <div className="flex items-center gap-2">
@@ -97,7 +98,7 @@ export function EmployeesSection() {
                   </div>
                 </th>
                 <th 
-                  className="text-left py-4 px-4 font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                  className="text-left py-3 px-3 font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors text-sm"
                   onClick={() => handleSort('department')}
                 >
                   <div className="flex items-center gap-2">
@@ -105,7 +106,7 @@ export function EmployeesSection() {
                   </div>
                 </th>
                 <th 
-                  className="text-left py-4 px-4 font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                  className="text-left py-3 px-3 font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors text-sm"
                   onClick={() => handleSort('performanceScore')}
                 >
                   <div className="flex items-center gap-2">
@@ -113,17 +114,17 @@ export function EmployeesSection() {
                   </div>
                 </th>
                 <th 
-                  className="text-left py-4 px-4 font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                  className="text-left py-3 px-3 font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors text-sm"
                   onClick={() => handleSort('satisfactionScore')}
                 >
                   <div className="flex items-center gap-2">
                     Satisfaction <SortIcon field="satisfactionScore" />
                   </div>
                 </th>
-                <th className="text-left py-4 px-4 font-medium text-muted-foreground">
+                <th className="text-left py-3 px-3 font-medium text-muted-foreground text-sm">
                   Training
                 </th>
-                <th className="text-left py-4 px-4 font-medium text-muted-foreground">
+                <th className="text-left py-3 px-3 font-medium text-muted-foreground text-sm">
                   Status
                 </th>
               </tr>
@@ -135,23 +136,23 @@ export function EmployeesSection() {
                   className="border-b border-border/50 hover:bg-secondary/30 transition-colors animate-fade-in"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  <td className="py-4 px-4">
+                  <td className="py-3 px-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-semibold">
+                      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-semibold text-sm flex-shrink-0">
                         {employee.name.split(' ').map(n => n[0]).join('')}
                       </div>
-                      <div>
-                        <p className="font-medium">{employee.name}</p>
-                        <p className="text-sm text-muted-foreground">{employee.yearsAtCompany} years</p>
+                      <div className="min-w-0">
+                        <p className="font-medium truncate">{employee.name}</p>
+                        <p className="text-xs text-muted-foreground">{employee.yearsAtCompany} years</p>
                       </div>
                     </div>
                   </td>
-                  <td className="py-4 px-4">
-                    <Badge variant="secondary">{employee.department}</Badge>
+                  <td className="py-3 px-3">
+                    <Badge variant="secondary" className="text-xs">{employee.department}</Badge>
                   </td>
-                  <td className="py-4 px-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-20 h-2 bg-secondary rounded-full overflow-hidden">
+                  <td className="py-3 px-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-16 h-2 bg-secondary rounded-full overflow-hidden">
                         <div 
                           className={cn(
                             "h-full rounded-full",
@@ -161,30 +162,30 @@ export function EmployeesSection() {
                           style={{ width: `${employee.performanceScore}%` }}
                         />
                       </div>
-                      <span className="font-mono text-sm">{employee.performanceScore}</span>
+                      <span className="font-mono text-xs">{employee.performanceScore}</span>
                     </div>
                   </td>
-                  <td className="py-4 px-4">
-                    <div className="flex items-center gap-2">
+                  <td className="py-3 px-3">
+                    <div className="flex items-center gap-1">
                       {[1, 2, 3, 4, 5].map(star => (
                         <div 
                           key={star}
                           className={cn(
-                            "w-3 h-3 rounded-full",
+                            "w-2 h-2 rounded-full",
                             star <= employee.satisfactionScore ? "bg-primary" : "bg-secondary"
                           )}
                         />
                       ))}
-                      <span className="font-mono text-sm ml-2">{employee.satisfactionScore.toFixed(1)}</span>
+                      <span className="font-mono text-xs ml-1">{employee.satisfactionScore.toFixed(1)}</span>
                     </div>
                   </td>
-                  <td className="py-4 px-4">
-                    <span className="font-mono text-sm">{employee.trainingHours}h</span>
+                  <td className="py-3 px-3">
+                    <span className="font-mono text-xs">{employee.trainingHours}h</span>
                   </td>
-                  <td className="py-4 px-4">
+                  <td className="py-3 px-3">
                     <Badge 
                       className={cn(
-                        "border-0",
+                        "border-0 text-xs",
                         employee.performanceCategory === 'High' ? "bg-success/20 text-success" :
                         employee.performanceCategory === 'Medium' ? "bg-warning/20 text-warning" :
                         "bg-destructive/20 text-destructive"
@@ -197,6 +198,81 @@ export function EmployeesSection() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile/Tablet Card View */}
+        <div className="lg:hidden space-y-3">
+          {filteredEmployees.map((employee, index) => (
+            <div 
+              key={employee.id}
+              className="p-4 rounded-lg bg-muted/20 border border-border/50 animate-fade-in"
+              style={{ animationDelay: `${index * 50}ms` }}
+            >
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-semibold flex-shrink-0">
+                    {employee.name.split(' ').map(n => n[0]).join('')}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-medium truncate">{employee.name}</p>
+                    <p className="text-xs text-muted-foreground">{employee.yearsAtCompany} years</p>
+                  </div>
+                </div>
+                <Badge 
+                  className={cn(
+                    "border-0 flex-shrink-0",
+                    employee.performanceCategory === 'High' ? "bg-success/20 text-success" :
+                    employee.performanceCategory === 'Medium' ? "bg-warning/20 text-warning" :
+                    "bg-destructive/20 text-destructive"
+                  )}
+                >
+                  {employee.performanceCategory}
+                </Badge>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Department</p>
+                  <Badge variant="secondary" className="text-xs">{employee.department}</Badge>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Training</p>
+                  <span className="font-mono">{employee.trainingHours}h</span>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Performance</p>
+                  <div className="flex items-center gap-2">
+                    <div className="w-12 h-2 bg-secondary rounded-full overflow-hidden">
+                      <div 
+                        className={cn(
+                          "h-full rounded-full",
+                          employee.performanceScore >= 80 ? "bg-success" :
+                          employee.performanceScore >= 60 ? "bg-warning" : "bg-destructive"
+                        )}
+                        style={{ width: `${employee.performanceScore}%` }}
+                      />
+                    </div>
+                    <span className="font-mono text-xs">{employee.performanceScore}</span>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Satisfaction</p>
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map(star => (
+                      <div 
+                        key={star}
+                        className={cn(
+                          "w-2 h-2 rounded-full",
+                          star <= employee.satisfactionScore ? "bg-primary" : "bg-secondary"
+                        )}
+                      />
+                    ))}
+                    <span className="font-mono text-xs ml-1">{employee.satisfactionScore.toFixed(1)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </ChartCard>
     </div>
