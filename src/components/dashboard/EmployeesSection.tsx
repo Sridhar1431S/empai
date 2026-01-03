@@ -3,18 +3,24 @@ import { employees, Employee } from '@/data/mockData';
 import { ChartCard } from './ChartCard';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Search, Filter, ChevronUp, ChevronDown } from 'lucide-react';
+import { Search, Filter, ChevronUp, ChevronDown, Download, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
 
 type SortField = 'name' | 'performanceScore' | 'satisfactionScore' | 'department';
 type SortDirection = 'asc' | 'desc';
+
+const ITEMS_PER_PAGE = 10;
 
 export function EmployeesSection() {
   const [search, setSearch] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState<string>('all');
   const [sortField, setSortField] = useState<SortField>('performanceScore');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const { toast } = useToast();
 
   const departments = ['all', ...new Set(employees.map(e => e.department))];
 
@@ -34,6 +40,12 @@ export function EmployeesSection() {
       return ((aVal as number) - (bVal as number)) * modifier;
     });
 
+  const totalPages = Math.ceil(filteredEmployees.length / ITEMS_PER_PAGE);
+  const paginatedEmployees = filteredEmployees.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -41,6 +53,17 @@ export function EmployeesSection() {
       setSortField(field);
       setSortDirection('desc');
     }
+    setCurrentPage(1);
+  };
+
+  const handleFilterChange = (value: string) => {
+    setDepartmentFilter(value);
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setCurrentPage(1);
   };
 
   const SortIcon = ({ field }: { field: SortField }) => {
@@ -48,6 +71,54 @@ export function EmployeesSection() {
     return sortDirection === 'asc' ? 
       <ChevronUp className="w-4 h-4" /> : 
       <ChevronDown className="w-4 h-4" />;
+  };
+
+  const exportToCSV = () => {
+    const headers = ['Name', 'Department', 'Performance Score', 'Satisfaction Score', 'Training Hours', 'Years at Company', 'Performance Category'];
+    const rows = filteredEmployees.map(e => [
+      e.name,
+      e.department,
+      e.performanceScore,
+      e.satisfactionScore,
+      e.trainingHours,
+      e.yearsAtCompany,
+      e.performanceCategory
+    ]);
+    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'employee_report.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: "Export Successful",
+      description: `Exported ${filteredEmployees.length} employee records as CSV`,
+    });
+  };
+
+  const exportToJSON = () => {
+    const jsonContent = JSON.stringify(filteredEmployees, null, 2);
+    
+    const blob = new Blob([jsonContent], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'employee_report.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: "Export Successful",
+      description: `Exported ${filteredEmployees.length} employee records as JSON`,
+    });
   };
 
   return (
@@ -59,26 +130,31 @@ export function EmployeesSection() {
           <Input
             placeholder="Search employees..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             className="pl-10"
           />
         </div>
-        <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
-          <SelectTrigger className="w-full sm:w-48">
-            <Filter className="w-4 h-4 mr-2" />
-            <SelectValue placeholder="Department" />
-          </SelectTrigger>
-          <SelectContent>
-            {departments.map(dept => (
-              <SelectItem key={dept} value={dept}>
-                {dept === 'all' ? 'All Departments' : dept}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex gap-2">
+          <Select value={departmentFilter} onValueChange={handleFilterChange}>
+            <SelectTrigger className="w-full sm:w-48">
+              <Filter className="w-4 h-4 mr-2" />
+              <SelectValue placeholder="Department" />
+            </SelectTrigger>
+            <SelectContent>
+              {departments.map(dept => (
+                <SelectItem key={dept} value={dept}>
+                  {dept === 'all' ? 'All Departments' : dept}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button variant="outline" size="icon" onClick={exportToCSV} title="Export CSV">
+            <Download className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
 
-      {/* Table - Desktop View */}
+      {/* Table */}
       <ChartCard 
         title="Employee Directory" 
         subtitle={`${filteredEmployees.length} employees found`}
@@ -130,7 +206,7 @@ export function EmployeesSection() {
               </tr>
             </thead>
             <tbody>
-              {filteredEmployees.map((employee, index) => (
+              {paginatedEmployees.map((employee, index) => (
                 <tr 
                   key={employee.id}
                   className="border-b border-border/50 hover:bg-secondary/30 transition-colors animate-fade-in"
@@ -202,7 +278,7 @@ export function EmployeesSection() {
 
         {/* Mobile/Tablet Card View */}
         <div className="lg:hidden space-y-3">
-          {filteredEmployees.map((employee, index) => (
+          {paginatedEmployees.map((employee, index) => (
             <div 
               key={employee.id}
               className="p-4 rounded-lg bg-muted/20 border border-border/50 animate-fade-in"
@@ -274,6 +350,52 @@ export function EmployeesSection() {
             </div>
           ))}
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 mt-4 border-t border-border">
+            <p className="text-sm text-muted-foreground">
+              Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, filteredEmployees.length)} of {filteredEmployees.length} employees
+            </p>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(1)}
+                disabled={currentPage === 1}
+              >
+                First
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              <span className="px-3 py-1 text-sm font-medium">
+                {currentPage} / {totalPages}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(totalPages)}
+                disabled={currentPage === totalPages}
+              >
+                Last
+              </Button>
+            </div>
+          </div>
+        )}
       </ChartCard>
     </div>
   );
