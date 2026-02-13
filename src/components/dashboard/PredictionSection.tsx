@@ -25,7 +25,7 @@ interface PredictionResult {
 }
 
 export function PredictionSection() {
-  // All dataset features
+  // Employee feature inputs used by the ML model for performance prediction
   const [age, setAge] = useState(30);
   const [gender, setGender] = useState('Male');
   const [department, setDepartment] = useState('Engineering');
@@ -49,8 +49,9 @@ export function PredictionSection() {
   const [apiStatus, setApiStatus] = useState<'checking' | 'online' | 'offline'>('checking');
   const { toast } = useToast();
 
-  // Health check on mount
+  // Check backend ML API availability when component mounts
   useEffect(() => {
+    // Calls health endpoint to verify ML service status
     const checkHealth = async () => {
       try {
         await healthCheck();
@@ -61,12 +62,13 @@ export function PredictionSection() {
     };
     checkHealth();
   }, []);
-
-  const handlePredict = async () => {
+// Sends employee data to backend ML model and updates UI with prediction results
+const handlePredict = async () => {
     setIsLoading(true);
     setError(null);
     
     try {
+      // Calling ML prediction API with structured employee features
       const response = await predictPerformance({
         Age: age,
         Gender: gender,
@@ -85,7 +87,7 @@ export function PredictionSection() {
         Employee_Satisfaction_Score: satisfactionScore[0],
         Job_Title: jobTitle,
       });
-
+    // Map backend ML response to frontend state for visualization
       setPrediction({
         score: Math.round(response.performance_score),
         category: response.risk_level,
@@ -99,7 +101,9 @@ export function PredictionSection() {
         title: "Prediction Complete",
         description: `Performance score: ${Math.round(response.performance_score)}`,
       });
-    } catch (err) {
+    } 
+    catch (err) {
+      // Handle API or network errors during prediction request
       const errorMessage = err instanceof Error ? err.message : 'Failed to get prediction';
       setError(errorMessage);
       toast({
@@ -111,7 +115,8 @@ export function PredictionSection() {
       setIsLoading(false);
     }
   };
-
+  
+// UI rendering: input form + prediction results with real-time feedback
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Input Form */}
