@@ -1,6 +1,6 @@
-# 📊 EMPAI – AI-Powered Dashboard for Solopreneurs
+# 📊 EMPAI – AI-Powered Dashboard for HR's
 
-EMPAI is an intelligent dashboard platform designed for **solopreneurs, startups, and analysts** to transform raw data into **actionable insights, predictions, and visual analytics** using AI.
+EMPAI is an intelligent dashboard platform designed for **HR's, solopreneurs, startups, and analysts** to transform raw data into **actionable insights, predictions, and visual analytics** using AI.
 
 It allows users to upload datasets and automatically generates **interactive charts, KPIs, and predictions** for better decision-making.
 
@@ -110,6 +110,10 @@ http://localhost:5000
 | GET    | /predict  | Prediction results   |
 
 **Screenshots**
+
+
+![Uploading Screenshot 2026-02-13 113148.png…]()
+
 
 **Use Cases**
 
