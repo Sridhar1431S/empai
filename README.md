@@ -10,7 +10,29 @@ It allows users to upload datasets and automatically generates **interactive cha
 
 🔗 https://empai.vercel.app
 
----
+## Screenshots
+<img width="1910" height="929" alt="Screenshot 2026-02-13 112500" src="https://github.com/user-attachments/assets/d8e408b9-aef8-498d-b5be-480f42703261" />
+
+<img width="1915" height="932" alt="Screenshot 2026-02-13 112530" src="https://github.com/user-attachments/assets/43df2d8c-20fb-43a9-afcc-c5ddbc555faa" />
+
+<img width="1912" height="927" alt="Screenshot 2026-02-13 112601" src="https://github.com/user-attachments/assets/a7c7598c-9718-48d7-941c-0879decb015e" />
+
+<img width="1919" height="934" alt="Screenshot 2026-02-13 112619" src="https://github.com/user-attachments/assets/b673c9e1-5f55-4f96-a9ef-bc2d755882a6" />
+
+<img width="1912" height="926" alt="Screenshot 2026-02-13 112735" src="https://github.com/user-attachments/assets/7acaf238-f670-4ded-a2f7-e27fba8f03f3" />
+
+<img width="1915" height="928" alt="Screenshot 2026-02-13 112803" src="https://github.com/user-attachments/assets/839bc2af-4dc9-4afc-b074-dcf2fe57ba88" />
+
+<img width="1919" height="933" alt="Screenshot 2026-02-13 112845" src="https://github.com/user-attachments/assets/98db1a8f-309f-42f2-8045-e7cd85fbeb9a" />
+
+<img width="1906" height="927" alt="Screenshot 2026-02-13 112950" src="https://github.com/user-attachments/assets/1c25a0ba-4baf-414e-97ad-4ded9503e2f6" />
+
+<img width="1919" height="932" alt="Screenshot 2026-02-13 113029" src="https://github.com/user-attachments/assets/d037e961-1e60-4f32-b072-ff8d9f07e76f" />
+
+<img width="1919" height="928" alt="Screenshot 2026-02-13 113103" src="https://github.com/user-attachments/assets/5faac7ef-8df8-4ac4-b556-0c0a485bd5f3" />
+
+<img width="1897" height="924" alt="Screenshot 2026-02-13 113148" src="https://github.com/user-attachments/assets/e46acf40-fa76-4302-984c-2c395a782c12" />
+
 
 ## 📌 Features
 
@@ -108,31 +130,6 @@ http://localhost:5000
 | GET    | /charts   | Get generated charts |
 | GET    | /insights | AI-based insights    |
 | GET    | /predict  | Prediction results   |
-
-**Screenshots**
-
-   <img width="1910" height="929" alt="Screenshot 2026-02-13 112500" src="https://github.com/user-attachments/assets/feaf054f-aea3-4a5c-aebc-85543d5893fc" />
-     
-<img width="1915" height="932" alt="Screenshot 2026-02-13 112530" src="https://github.com/user-attachments/assets/553ecb6a-f51e-4ea9-bacb-5b21e880f448" />
-
-<img width="1912" height="927" alt="Screenshot 2026-02-13 112601" src="https://github.com/user-attachments/assets/afa20560-62ad-43c0-81b0-e36d92b990d3" />
-
-<img width="1919" height="934" alt="Screenshot 2026-02-13 112619" src="https://github.com/user-attachments/assets/ace03c4b-8540-4443-ad92-00b33680ed9b" />
-
-<img width="1912" height="926" alt="Screenshot 2026-02-13 112735" src="https://github.com/user-attachments/assets/d6b0251a-d810-4a05-9f96-c5282011bbfe" />
-
-<img width="1915" height="928" alt="Screenshot 2026-02-13 112803" src="https://github.com/user-attachments/assets/e0c7db9a-6a69-4e6f-8fb4-d2099fae53e3" />
-
-<img width="1919" height="933" alt="Screenshot 2026-02-13 112845" src="https://github.com/user-attachments/assets/0e8ea002-b948-40ce-859c-0563df83c210" />
-
-<img width="1906" height="927" alt="Screenshot 2026-02-13 112950" src="https://github.com/user-attachments/assets/c43e6c4e-c12d-449c-b395-94867431586a" />
-
-<img width="1919" height="932" alt="Screenshot 2026-02-13 113029" src="https://github.com/user-attachments/assets/49f65b9e-b603-460e-bc51-094c00f8d53e" />
-
-<img width="1919" height="928" alt="Screenshot 2026-02-13 113103" src="https://github.com/user-attachments/assets/08100aa1-d52a-40a9-958f-30f51aabf185" />
-
-<img width="1897" height="924" alt="Screenshot 2026-02-13 113148" src="https://github.com/user-attachments/assets/f280350b-77f2-4d0a-bf1f-e2d2d7b8f635" />
-
 
 **Use Cases**
 
